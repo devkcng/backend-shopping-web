@@ -1,26 +1,38 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 
 @Injectable()
 export class CartsService {
-  create(createCartDto: CreateCartDto) {
-    return 'This action adds a new cart';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createCartDto: CreateCartDto) {
+    return this.prisma.cart.create({
+      data: createCartDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all carts`;
+  async findAll() {
+    return this.prisma.cart.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} cart`;
+  async findOne(id: number) {
+    return this.prisma.cart.findUnique({
+      where: { cart_id: id },
+    });
   }
 
-  update(id: number, updateCartDto: UpdateCartDto) {
-    return `This action updates a #${id} cart`;
+  async update(id: number, updateCartDto: UpdateCartDto) {
+    return this.prisma.cart.update({
+      where: { cart_id: id },
+      data: updateCartDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} cart`;
+  async remove(id: number) {
+    return this.prisma.cart.delete({
+      where: { cart_id: id },
+    });
   }
 }

@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // Use the appropriate database provider
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id      Int       @id @default(autoincrement())
+  name         String
+  email        String    @unique
+  password     String
+  phone_number String
+  address      String
+  orders       Order[]
+  reviews      Review[]
+  cart         Cart?
+
+  @@map("users")
+}
+
+model Product {
+  product_id      Int           @id @default(autoincrement())
+  name            String
+  description     String
+  price           Float
+  stock_quantity  Int
+  category_id     Int
+  category        Category      @relation(fields: [category_id], references: [category_id])
+  order_items     Order_Item[]
+  reviews         Review[]
+  cart_items      Cart_Item[]
+
+  @@map("products")
+}
+
+model Category {
+  category_id Int       @id @default(autoincrement())
+  name        String
+  description String
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Order {
+  order_id     Int           @id @default(autoincrement())
+  user_id      Int
+  order_date   DateTime
+  total_amount Float
+  status       String
+  user         User          @relation(fields: [user_id], references: [user_id])
+  order_items  Order_Item[]
+  payment      Payment?
+
+  @@map("orders")
+}
+
+model Order_Item {
+  order_item_id Int       @id @default(autoincrement())
+  order_id      Int
+  product_id    Int
+  quantity      Int
+  unit_price    Float
+  order         Order     @relation(fields: [order_id], references: [order_id])
+  product       Product   @relation(fields: [product_id], references: [product_id])
+
+  @@map("order_items")
+}
+
+model Payment {
+  payment_id    Int      @id @default(autoincrement())
+  order_id      Int @unique
+  payment_date  DateTime
+  amount        Float
+  payment_method String
+  order         Order    @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+model Review {
+  review_id  Int       @id @default(autoincrement())
+  user_id    Int
+  product_id Int
+  rating     Int
+  comment    String
+  user       User      @relation(fields: [user_id], references: [user_id])
+  product    Product   @relation(fields: [product_id], references: [product_id])
+
+  @@map("reviews")
+}
+
+model Cart {
+  cart_id     Int        @id @default(autoincrement())
+  user_id     Int        @unique
+  created_date DateTime
+  user        User       @relation(fields: [user_id], references: [user_id])
+  cart_items  Cart_Item[]
+
+  @@map("carts")
+}
+
+model Cart_Item {
+  cart_item_id Int       @id @default(autoincrement())
+  cart_id      Int
+  product_id   Int
+  quantity     Int
+  cart         Cart      @relation(fields: [cart_id], references: [cart_id])
+  product      Product   @relation(fields: [product_id], references: [product_id])
+
+  @@map("cart_items")
+}
