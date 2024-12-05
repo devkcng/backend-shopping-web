@@ -43,7 +43,7 @@ docker-compose up -d
 npx prisma migrate dev
 ```
 
-Database URL: `postgresql://postgres:password@localhost:5432/nest`
+Database URL: `postgres://postgres:postgres@localhost:5432/nestjs_db`
 
 ## Compile and run the project
 
