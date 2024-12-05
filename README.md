@@ -58,6 +58,12 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+Project will be running on `http://localhost:8080`
+
+## API Documentation
+
+API documentation is available at `http://localhost:8080/api`
+
 ## Run tests
 
 ```bash
